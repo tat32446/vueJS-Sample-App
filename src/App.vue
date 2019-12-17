@@ -1,15 +1,19 @@
 <template>
   <div id="app">
-    <Header />
+    <Header
+      :numCorrect="numCorrect"
+      :numTotal="numTotal"
+    />
 
     <b-container class="bv-example-row">
       <b-row>
         <b-col sm="6" offset="3">
           <QuestionBox
-          v-if="questions.length"
-          :currentquestion="questions[index]"
-          :next="next"
-           />
+            v-if="questions.length"
+            :currentQuestion="questions[index]"
+            :next="next"
+            :increment="increment"
+          />
         </b-col>
       </b-row>
     </b-container>
@@ -17,11 +21,10 @@
 </template>
 
 <script>
-import Header from "./components/Header.vue";
-import QuestionBox from "./components/QuestionBox";
-
+import Header from './components/Header.vue'
+import QuestionBox from './components/QuestionBox.vue'
 export default {
-  name: "app",
+  name: 'app',
   components: {
     Header,
     QuestionBox
@@ -29,38 +32,39 @@ export default {
   data() {
     return {
       questions: [],
-      index:0
-     }
+      index: 0,
+      numCorrect: 0,
+      numTotal: 0
+    }
   },
   methods: {
-    next(){
+    next() {
       this.index++
+    },
+    increment(isCorrect) {
+      if (isCorrect) {
+        this.numCorrect++
       }
-
+      this.numTotal++
+    }
   },
-  mounted: function(){
-
-  fetch("https://opentdb.com/api.php?amount=10&category=27&difficulty=hard&type=multiple",{
-    method:'get'
-  })
-  .then((response) => {
-    return response.json()
-
-  })
-  .then((jsonData)=>{
-    
-    this.questions=jsonData.results
-
+  mounted: function() {
+    fetch('https://opentdb.com/api.php?amount=10&category=23&difficulty=easy&type=multiple', {
+      method: 'get'
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((jsonData) => {
+        this.questions = jsonData.results
+      })
   }
-  
-  )
-  }
-};
+}
 </script>
 
 <style>
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
